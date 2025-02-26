@@ -61,4 +61,4 @@ def send_shortlist_email(receiver_email, subject, job_role):
         print(f" Error: {e}")
 
 job_role="Software Engineer"
-send_shortlist_email("jastennison227@gmail.com", "TCS Interview Shortlisting - "+ job_role, job_role )
+send_shortlist_email("example@gmail.com", "TCS Interview Shortlisting - "+ job_role, job_role )
