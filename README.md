@@ -41,7 +41,7 @@ HR professionals spend up to 40% of their time on administrative tasks like resu
 - **Improves Hiring Accuracy**: AI-driven evaluation ensures better candidate selection.
 - **Scalability**: Adaptable for large-scale HR operations.
 
-## Enhancements yet to be made
+## Further Enhancements 
 - **Full Implementation in LangFlow & LangGraph**: This is a basic implementation; the complete system will use LangFlow and LangGraph for efficient multi-agent orchestration.
 - **Integration with HRMS & ATS**: Seamless workflow with HR management systems.
 - **Expanded AI Capabilities**: More advanced models for resume parsing and candidate evaluation.
@@ -54,6 +54,4 @@ We welcome contributions to enhance HRXpert AI. Feel free to submit pull request
 
 ---
 
-## License
-HRXpert AI is open-source under the MIT License. See `LICENSE` for details.
 
