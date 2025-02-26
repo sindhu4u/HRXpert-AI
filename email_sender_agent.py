@@ -3,8 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 def send_shortlist_email(receiver_email, subject, job_role):
-    sender_email = "sindhur2004@gmail.com"  # Replace with your email
-    app_password = "jymi gyya kcxa zwik"  # Replace with your App Password
+    sender_email = "example@gmail.com"  # Replace with your email
+    app_password = "xxxx xxxx xxxx xxxx"  # Replace with your App Password
 
     # Email body with realistic details
     body = f"""
