@@ -3,18 +3,20 @@
 ## Description
 HRXpert AI is an AI-driven HR automation tool designed to streamline and optimize HR tasks such as resume screening, offer letter issuance, payroll processing, onboarding, and HR reporting. By leveraging a multi-agent AI approach with LangGraph or LangFlow, HRXpert AI automates repetitive HR processes, allowing HR professionals to focus on strategic decision-making.
 
+This repository provides a **basic implementation of the Resume Screening agent** as a standalone module. The full implementation of HRXpert AI will utilize **LangFlow and LangGraph** to orchestrate multi-agent workflows efficiently.
+
 ## Problem Statement
 HR professionals spend up to 40% of their time on administrative tasks like resume screening, offer letter creation, payroll processing, and onboarding. Manual processes slow hiring, increase operational costs, and reduce efficiency. HRXpert AI addresses these inefficiencies by automating HR workflows with AI-driven decision-making, significantly reducing manual effort and improving overall HR operations.
 
 ## Setup
 ### Prerequisites
-1. Install Python 
+1. Install Python
 2. Create a `.env` file and add your API keys:
    ```sh
    GEMINI_API_KEY=your_api_key_here
    ```
 
-### Running HRXpert AI
+### Running HRXpert AI (Resume Screening Agent)
 1. Ensure all dependencies are installed.
 2. Place the resume files in the project directory.
 3. Run the main script:
@@ -39,7 +41,8 @@ HR professionals spend up to 40% of their time on administrative tasks like resu
 - **Improves Hiring Accuracy**: AI-driven evaluation ensures better candidate selection.
 - **Scalability**: Adaptable for large-scale HR operations.
 
-## Future Enhancements
+## Enhancements yet to be made
+- **Full Implementation in LangFlow & LangGraph**: This is a basic implementation; the complete system will use LangFlow and LangGraph for efficient multi-agent orchestration.
 - **Integration with HRMS & ATS**: Seamless workflow with HR management systems.
 - **Expanded AI Capabilities**: More advanced models for resume parsing and candidate evaluation.
 - **Cloud Deployment**: Scalability for enterprise-level usage.
@@ -48,7 +51,6 @@ HR professionals spend up to 40% of their time on administrative tasks like resu
 
 ### Contribution
 We welcome contributions to enhance HRXpert AI. Feel free to submit pull requests or open issues for bug reports and feature requests.
-
 
 ---
 
