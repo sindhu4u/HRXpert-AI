@@ -19,52 +19,9 @@ def evaluate_resume(job_role,candidate_skills,required_skills):
     )
 
 
-    model = genai.GenerativeModel(
-    model_name="gemini-2.0-pro-exp-02-05",
-    generation_config=generation_config,
-    system_instruction="List out the top 10 skills only for the given Job Role that the Resume of the candidate applying for that Job Position must have as a list of the names of the technologies alone.",
-    )
 
     chat_session = model.start_chat(
         history=[
-            {
-                "role": "user",
-                "parts": [
-                    "Full Stack Developer\nList the names alone",
-                ],
-            },
-            {
-                "role": "model",
-                "parts": [
-                    "JavaScript\nHTML\nCSS\nReact\nAngular\nNode.js\nPython\nSQL\nGit\nREST",  # Removed numbering and extra spacing
-                ],
-            },
-            {
-                "role": "user",
-                "parts": [
-                    "Data Scientist.\nList the names alone",
-                ],
-            },
-            {
-                "role": "model",
-                "parts": [
-                    "Python\nSQL\nMachine Learning\nStatistics\nR\nData Visualization\nDeep Learning\nBig Data\nCloud Computing\nData Wrangling", # Removed numbering and extra spacing
-                ],
-            },
-            {
-                "role": "user",
-                "parts": [
-                    "AI Engineer\nList the names alone",
-                ],
-            },
-            {
-                "role": "model",
-                "parts": [
-                    "Python\nMachine Learning\nDeep Learning\nTensorFlow\nPyTorch\nNatural Language Processing (NLP)\nComputer Vision\nCloud Computing (AWS/Azure/GCP)\nBig Data\nReinforcement Learning", # Removed numbering and extra spacing
-                ],
-            },
-
-
             # Example 1: Full Stack Developer (Valid)
             {
                 "role": "user",
@@ -138,8 +95,7 @@ def evaluate_resume(job_role,candidate_skills,required_skills):
 
         ]
     )
-    prompt=" Job Role: "+job_role+"Required Skills:\n"+required_skills+"\nCandidate Skills:\n"+candidate_skills
-    prompt=                    "Job Role: AI Engineer\nRequired Skills: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, Natural Language Processing (NLP), Computer Vision, Cloud Computing (AWS/GCP/Azure)\nCandidate Skills:  R, Statistical Modeling, Data Analysis, SQL, Tableau"
+    prompt=" Job Role: "+job_role+"Required Skills:\n"+str(required_skills)+"\nCandidate Skills:\n"+str(candidate_skills)
 
     response = chat_session.send_message(prompt)
     classification_line=response.text.split('\n')[0]
