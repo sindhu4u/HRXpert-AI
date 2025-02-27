@@ -36,8 +36,8 @@ HR professionals spend up to 40% of their time on administrative tasks like resu
 ---
 
 ## Impact & Benefits
-- **Reduces Hiring Time by 50%**: Faster screening and shortlisting.
-- **Cuts Operational Costs by 30%**: Less manual effort required.
+- **Reduces Hiring Time**: Faster screening and shortlisting.
+- **Cuts Operational Costs**: Less manual effort required.
 - **Improves Hiring Accuracy**: AI-driven evaluation ensures better candidate selection.
 - **Scalability**: Adaptable for large-scale HR operations.
 
