@@ -22,9 +22,4 @@ def extract_text_and_hyperlinks_from_pdf(pdf_path):
 
     return text, hyperlinks
 
-# Example usage
-pdf_path = "resume.pdf"  # Replace with your PDF file path
-text, hyperlinks = extract_text_and_hyperlinks_from_pdf(pdf_path)
 
-print("Extracted Text:\n", text)
-print("\nExtracted Hyperlinks:\n", hyperlinks)
