@@ -1,62 +1,147 @@
 import os
-from relevant_skills_agent import get_relevant_skills
-from screening_agent import evaluate_resume
-from email_sender_agent import send_shortlist_email
-from ocr_agent import extract_text_and_hyperlinks_from_pdf
-from ner_agent import extract_resume_entities
+import google.generativeai as genai
+def evaluate_resume(job_role,candidate_skills,required_skills):
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-def main():
-    # Step 1: Get resume file names from the user
-    resume_files = input("Enter the resume file names (comma-separated): ").strip().split(",")
+    # Create the model
+    generation_config = {
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 64,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+    }
 
-    extracted_resumes = []  # List to store extracted details
+    model = genai.GenerativeModel(
+    model_name="gemini-2.0-pro-exp-02-05",
+    generation_config=generation_config,
+    system_instruction="You will be given the skills you need to look for in the resume and also the skills a candidate applying for a position has. Infer if the candidate's Resume is valid or not for the job and possesses that skill.",
+    )
 
-    for file in resume_files:
-        file = file.strip()
-        print(f"\nProcessing {file}...")
-        
-        # Extract text and perform Named Entity Recognition (NER)
-        extracted_text = extract_text_and_hyperlinks_from_pdf(file)
-        extracted_info = extract_resume_entities(extracted_text)
 
-        # Store extracted details
-        extracted_resumes.append(extracted_info)
+    model = genai.GenerativeModel(
+    model_name="gemini-2.0-pro-exp-02-05",
+    generation_config=generation_config,
+    system_instruction="List out the top 10 skills only for the given Job Role that the Resume of the candidate applying for that Job Position must have as a list of the names of the technologies alone.",
+    )
 
-    # Step 2: Get HR input for job role
-    job_role = input("\nEnter the job role for screening: ").strip()
+    chat_session = model.start_chat(
+        history=[
+            {
+                "role": "user",
+                "parts": [
+                    "Full Stack Developer\nList the names alone",
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "JavaScript\nHTML\nCSS\nReact\nAngular\nNode.js\nPython\nSQL\nGit\nREST",  # Removed numbering and extra spacing
+                ],
+            },
+            {
+                "role": "user",
+                "parts": [
+                    "Data Scientist.\nList the names alone",
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Python\nSQL\nMachine Learning\nStatistics\nR\nData Visualization\nDeep Learning\nBig Data\nCloud Computing\nData Wrangling", # Removed numbering and extra spacing
+                ],
+            },
+            {
+                "role": "user",
+                "parts": [
+                    "AI Engineer\nList the names alone",
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Python\nMachine Learning\nDeep Learning\nTensorFlow\nPyTorch\nNatural Language Processing (NLP)\nComputer Vision\nCloud Computing (AWS/Azure/GCP)\nBig Data\nReinforcement Learning", # Removed numbering and extra spacing
+                ],
+            },
 
-    # Step 3: Fetch skills required for the job role
-    required_skills = get_relevant_skills(job_role)
-    print(f"\nGenerated skills for {job_role}: {', '.join(required_skills)}")
 
-    # Step 4: Confirm or modify the skills
-    confirmation = input("\nAre these skills correct? (yes/no): ").strip().lower()
-    if confirmation != "yes":
-        required_skills = input("Enter the correct skills (comma-separated): ").strip().split(",")
+            # Example 1: Full Stack Developer (Valid)
+            {
+                "role": "user",
+                "parts": [
+                    "Job Role: Full Stack Developer\nRequired Skills: JavaScript, HTML, CSS, React, Node.js, Python, SQL, Git, REST\nCandidate Skills: JavaScript, HTML, CSS, React, Node.js, Python, SQL, Git, REST, Docker, Kubernetes"
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Classification: Valid\nReasoning: The candidate possesses all the required skills (JavaScript, HTML, CSS, React, Node.js, Python, SQL, Git, REST) and even has additional relevant skills (Docker, Kubernetes)."
+                ],
+            },
 
-    shortlisted_candidates = []  # Store candidates who match the job criteria
+            # Example 2: Full Stack Developer (Not Valid)
+            {
+                "role": "user",
+                "parts": [
+                    "Job Role: Full Stack Developer\nRequired Skills: JavaScript, HTML, CSS, React, Node.js, Python, SQL, Git, REST\nCandidate Skills: Java, C++, Spring, Hibernate, MySQL, Git"
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Classification: Not Valid\nReasoning: The candidate lacks several crucial required skills. While they have Git and SQL (MySQL), they are missing JavaScript, HTML, CSS, React, Node.js, and Python.  Their Java/Spring/Hibernate experience, while valuable, doesn't align with the core requirements of this specific Full Stack Developer role."
+                ],
+            },
 
-    # Step 5: Screen resumes based on required skills
-    for candidate in extracted_resumes:
-        candidate_skills = candidate.get("skills", [])
-        print(f"\nScreening {candidate['name']}'s resume...")
+            # Example 3: AI Engineer (Valid)
+            {
+                "role": "user",
+                "parts": [
+                    "Job Role: AI Engineer\nRequired Skills: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, Natural Language Processing (NLP), Computer Vision, Cloud Computing (AWS/GCP/Azure)\nCandidate Skills: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, Computer Vision, AWS, Scikit-learn"
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Classification: Valid\nReasoning: The candidate has all the essential skills, including Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, Computer Vision, and Cloud Computing (AWS). The addition of Scikit-learn further strengthens their profile."
+                ],
+            },
 
-        screening_result = evaluate_resume(job_role, required_skills, candidate_skills)
-        print(f"Screening Result for {candidate['name']}: {screening_result}")
+            # Example 4: AI Engineer (Not Valid)
+            {
+                "role": "user",
+                "parts": [
+                    "Job Role: AI Engineer\nRequired Skills: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, Natural Language Processing (NLP), Computer Vision, Cloud Computing (AWS/GCP/Azure)\nCandidate Skills:  R, Statistical Modeling, Data Analysis, SQL, Tableau"
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Classification: Not Valid\nReasoning: The candidate's skills are more aligned with a Data Analyst or Data Scientist role. While they have valuable skills like R, Statistical Modeling, Data Analysis, SQL, and Tableau, they are missing core AI Engineering skills like Python, Deep Learning, TensorFlow, PyTorch, NLP, and Computer Vision."
+                ],
+            },
 
-        # Step 6: Ask HR to approve the shortlisted candidates
-        if "Valid" in screening_result:
-            approve = input(f"Approve {candidate['name']} for an interview? (yes/no): ").strip().lower()
-            if approve == "yes":
-                shortlisted_candidates.append(candidate)
+            # Example 5: Full Stack Developer (Valid - Partial Match with Explanation)
+            {
+                "role": "user",
+                "parts": [
+                    "Job Role: Full Stack Developer\nRequired Skills: JavaScript, HTML, CSS, React, Node.js, Python, SQL, Git, REST\nCandidate Skills: JavaScript, HTML, CSS, React, Node.js, Git, REST"
+                ],
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "Classification: Valid \nReasoning: The candidate possesses most of the required front-end and back-end skills (JavaScript, HTML, CSS, React, Node.js, Git, REST) but is missing Python and SQL. While not a perfect match, they could be considered for further evaluation or a more specialized front-end role.  Further investigation is recommended to assess their potential to learn Python and SQL quickly."
+                ],
+            },
 
-    # Step 7: Send emails to shortlisted candidates
-    for candidate in shortlisted_candidates:
-        email = candidate["email"]
-        response = send_shortlist_email(email, f"Interview Invitation for {job_role}", job_role)
-        print(response)
 
-    print("\nScreening process completed.")
+        ]
+    )
+    prompt=" Job Role: "+job_role+"Required Skills:\n"+str(required_skills)+"\nCandidate Skills:\n"+str(candidate_skills)
 
-if __name__ == "__main__":
-    main()
+    response = chat_session.send_message(prompt)
+    classification_line=response.text.split('\n')[0]
+    classification = classification_line.split(': ')[1]
+    return (response.text,classification)
+
