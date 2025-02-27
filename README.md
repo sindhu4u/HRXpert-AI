@@ -10,7 +10,7 @@ HR professionals spend up to 40% of their time on administrative tasks like resu
 
 ## Setup
 ### Prerequisites
-1. Install Python
+1. Install Python and install required libraries.
 2. Create a `.env` file and add your API keys:
    ```sh
    GEMINI_API_KEY=your_api_key_here
